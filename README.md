@@ -4,6 +4,26 @@
 
 **当前版本：0.9.0-beta（测试版）。六个阶段功能已完成，并包含「Unity Editor 管理」设置页、工程目录 JSON 元数据同步、路径重关联与全局异常日志。开源协议：MIT。**
 
+## 界面预览
+
+### 项目库
+
+<p align="center">
+  <img src="docs/screenshots/01-project-gallery.png" width="860" alt="Unity Project Gallery 项目库界面：工程封面卡片、分类、搜索与扫描入口" />
+</p>
+
+### 工程详情
+
+<p align="center">
+  <img src="docs/screenshots/02-project-detail.png" width="860" alt="工程详情界面：项目简介、展示素材、功能模块与工程信息" />
+</p>
+
+### 多素材与视频
+
+<p align="center">
+  <img src="docs/screenshots/03-project-detail-media.png" width="860" alt="工程详情界面：多张截图、视频封面、素材说明与展示操作" />
+</p>
+
 ## 技术栈
 
 - Windows 10 / Windows 11
