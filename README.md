@@ -202,4 +202,4 @@ dotnet test tests/UnityProjectGallery.Tests/UnityProjectGallery.Tests.csproj
 
 ## 持续集成
 
-推送到 `main` 或提交 Pull Request 时，GitHub Actions 会在 Windows 环境执行还原、Release 构建与全部单元测试。工作流见 [.github/workflows/build.yml](.github/workflows/build.yml)。
+推送到 `master` 或提交 Pull Request 时，GitHub Actions 会在 Windows 环境执行还原、Release 构建与全部单元测试。工作流见 [.github/workflows/build.yml](.github/workflows/build.yml)。
