@@ -47,6 +47,19 @@
                                   Command="{Binding Project.ToggleFavoriteCommand}" />
                     <Button Style="{StaticResource Button.Secondary}"
                             Margin="0,0,10,0"
+                            Command="{Binding BrowseAssetsCommand}"
+                            AutomationProperties.AutomationId="BrowseAssetsButton"
+                            ToolTip="浏览 Assets 中的模型、图片与音频资源">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8A9;"
+                                       Style="{StaticResource Text.Icon}"
+                                       FontSize="11"
+                                       Margin="0,0,6,0" />
+                            <TextBlock Text="Assets 预览" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource Button.Secondary}"
+                            Margin="0,0,10,0"
                             Command="{Binding RevealProjectCommand}"
                             AutomationProperties.AutomationId="RevealProjectButton"
                             ToolTip="在资源管理器中打开工程的 Assets 文件夹">
@@ -1223,11 +1236,11 @@
                 </Border>
             </Grid>
 
-            <TextBlock Grid.Row="4"
+            <!-- <TextBlock Grid.Row="4"
                        Text="第六阶段：工程信息、截图与视频索引、标签、功能与素材说明、收藏及最近打开时间保存在本地 SQLite，并同步写入 _ProjectPreview/project-gallery.json；工程目录移动后可在此处重新关联。"
                        Margin="0,18,0,0"
                        FontSize="11"
-                       Foreground="{StaticResource TextMutedBrush}" />
+                       Foreground="{StaticResource TextMutedBrush}" /> -->
         </Grid>
     </ScrollViewer>
 </UserControl>

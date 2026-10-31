@@ -55,6 +55,46 @@ public sealed class ProjectRevealTests : IDisposable
         Assert.Contains("Assets", statusMessage);
     }
 
+    [Fact]
+    public void BrowseAssetsCommand_OpensAssetBrowserForProject()
+    {
+        var projectPath = CreateUnityProject("AssetProject");
+        var previewService = new FakeAssetPreviewService();
+        var statusMessage = string.Empty;
+        var viewModel = CreateDetailViewModel(
+            projectPath,
+            new FakeRevealService(),
+            message => statusMessage = message,
+            previewService);
+
+        viewModel.BrowseAssetsCommand.Execute(null);
+
+        Assert.Equal(projectPath, previewService.ProjectPath);
+        Assert.Equal("AssetProject", previewService.ProjectName);
+        Assert.Contains("Assets 预览", statusMessage);
+    }
+
+    [Fact]
+    public void BrowseAssetsCommand_ReportsMissingAssetsFolder()
+    {
+        var projectPath = Path.Combine(_tempRoot, "MissingAssetPreview");
+        Directory.CreateDirectory(Path.Combine(projectPath, "Packages"));
+        Directory.CreateDirectory(Path.Combine(projectPath, "ProjectSettings"));
+
+        var previewService = new FakeAssetPreviewService();
+        var statusMessage = string.Empty;
+        var viewModel = CreateDetailViewModel(
+            projectPath,
+            new FakeRevealService(),
+            message => statusMessage = message,
+            previewService);
+
+        viewModel.BrowseAssetsCommand.Execute(null);
+
+        Assert.Null(previewService.ProjectPath);
+        Assert.Contains("Assets", statusMessage);
+    }
+
     public void Dispose()
     {
         try
@@ -81,7 +121,8 @@ public sealed class ProjectRevealTests : IDisposable
     private static ProjectDetailViewModel CreateDetailViewModel(
         string projectPath,
         IProjectFolderRevealService revealService,
-        Action<string> showStatus)
+        Action<string> showStatus,
+        IAssetPreviewService? assetPreviewService = null)
     {
         var project = new UnityProject
         {
@@ -98,7 +139,8 @@ public sealed class ProjectRevealTests : IDisposable
             showStatus,
             new StubLaunchService(),
             new StubPathPicker(),
-            revealService);
+            revealService,
+            assetPreviewService ?? new StubAssetPreviewService());
     }
 
     private sealed class FakeRevealService : IProjectFolderRevealService
@@ -115,6 +157,26 @@ public sealed class ProjectRevealTests : IDisposable
     private sealed class StubPathPicker : IProjectPathPicker
     {
         public string? PickProjectDirectory() => null;
+    }
+
+    private sealed class StubAssetPreviewService : IAssetPreviewService
+    {
+        public void ShowAssetBrowser(string projectName, string projectPath)
+        {
+        }
+    }
+
+    private sealed class FakeAssetPreviewService : IAssetPreviewService
+    {
+        public string? ProjectName { get; private set; }
+
+        public string? ProjectPath { get; private set; }
+
+        public void ShowAssetBrowser(string projectName, string projectPath)
+        {
+            ProjectName = projectName;
+            ProjectPath = projectPath;
+        }
     }
 
     private sealed class StubLaunchService : IProjectLaunchService

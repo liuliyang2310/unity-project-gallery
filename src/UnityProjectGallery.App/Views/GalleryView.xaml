@@ -155,21 +155,6 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="&#xE946;"
-                                   Style="{StaticResource Text.Icon}"
-                                   FontSize="11"
-                                   Foreground="{StaticResource AccentOnDarkBrush}"
-                                   VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="1"
-                                   Margin="8,0,0,0"
-                                   FontSize="11"
-                                   Foreground="{StaticResource TextSecondaryBrush}"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Center">
-                            <Run Text="第六阶段 · 持久化与虚拟化" Foreground="{StaticResource AccentOnDarkBrush}" FontWeight="SemiBold" />
-                            <Run Text="　工程与素材索引保存到本地 SQLite，用户编辑同步写入 _ProjectPreview/project-gallery.json，路径失效时可重新关联。" />
-                        </TextBlock>
                     </Grid>
 
                     <StackPanel Grid.Column="1"

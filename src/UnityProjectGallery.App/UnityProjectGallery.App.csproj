@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <Version>0.9.0-beta</Version>
+    <Version>0.11.0-beta</Version>
     <Product>Unity Project Gallery</Product>
     <Description>本地 Unity 工程展示与管理工具（Beta）</Description>
   </PropertyGroup>
@@ -15,6 +15,11 @@
     <ProjectReference Include="..\UnityProjectGallery.Core\UnityProjectGallery.Core.csproj" />
     <ProjectReference Include="..\UnityProjectGallery.Infrastructure\UnityProjectGallery.Infrastructure.csproj" />
     <ProjectReference Include="..\UnityProjectGallery.Models\UnityProjectGallery.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
   </ItemGroup>
 
 </Project>

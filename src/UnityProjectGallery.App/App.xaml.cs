@@ -5,6 +5,7 @@ using UnityProjectGallery.App.Services;
 using UnityProjectGallery.App.ViewModels;
 using UnityProjectGallery.Infrastructure.Editors;
 using UnityProjectGallery.Infrastructure.Media;
+using UnityProjectGallery.Infrastructure.Models;
 using UnityProjectGallery.Infrastructure.Persistence;
 using UnityProjectGallery.Infrastructure.Scanning;
 
@@ -36,6 +37,12 @@ public partial class App : Application
             var mediaScanner = new ProjectMediaScanner();
             var folderPicker = new WindowsScanFolderPicker();
             var mediaViewer = new WpfMediaViewerService();
+            var folderReveal = new WindowsExplorerRevealService();
+            var assetPreview = new WpfAssetPreviewService(
+                new AssetsPreviewScanner(),
+                new AssimpModelLoader(),
+                mediaViewer,
+                folderReveal);
             var launchService = new ProjectLaunchService(
                 editorLocator,
                 new WpfUnityLaunchPromptService(),
@@ -55,7 +62,8 @@ public partial class App : Application
                 editorLocator,
                 editorVersionReader,
                 editorFilePicker,
-                new WindowsExplorerRevealService());
+                folderReveal,
+                assetPreview);
             await mainViewModel.InitializeAsync();
 
             var mainWindow = new MainWindow { DataContext = mainViewModel };

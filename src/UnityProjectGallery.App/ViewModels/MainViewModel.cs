@@ -28,6 +28,7 @@ public sealed class MainViewModel : ObservableObject
     private readonly IUnityEditorVersionReader _editorVersionReader;
     private readonly IUnityEditorFilePicker _editorFilePicker;
     private readonly IProjectFolderRevealService _folderRevealService;
+    private readonly IAssetPreviewService _assetPreviewService;
     private readonly object _pendingSaveGate = new();
     private readonly HashSet<Task> _pendingSaves = new();
     private object? _currentPage;
@@ -48,7 +49,8 @@ public sealed class MainViewModel : ObservableObject
         IUnityEditorLocator editorLocator,
         IUnityEditorVersionReader editorVersionReader,
         IUnityEditorFilePicker editorFilePicker,
-        IProjectFolderRevealService folderRevealService)
+        IProjectFolderRevealService folderRevealService,
+        IAssetPreviewService assetPreviewService)
     {
         ArgumentNullException.ThrowIfNull(repository);
         ArgumentNullException.ThrowIfNull(scanner);
@@ -63,6 +65,7 @@ public sealed class MainViewModel : ObservableObject
         ArgumentNullException.ThrowIfNull(editorVersionReader);
         ArgumentNullException.ThrowIfNull(editorFilePicker);
         ArgumentNullException.ThrowIfNull(folderRevealService);
+        ArgumentNullException.ThrowIfNull(assetPreviewService);
 
         _repository = repository;
         _scanner = scanner;
@@ -77,6 +80,7 @@ public sealed class MainViewModel : ObservableObject
         _editorVersionReader = editorVersionReader;
         _editorFilePicker = editorFilePicker;
         _folderRevealService = folderRevealService;
+        _assetPreviewService = assetPreviewService;
 
         OpenSettingsCommand = new RelayCommand(() => _ = OpenSettingsAsync());
     }
@@ -309,7 +313,8 @@ public sealed class MainViewModel : ObservableObject
             ShowStatus,
             _projectLaunchService,
             _projectPathPicker,
-            _folderRevealService);
+            _folderRevealService,
+            _assetPreviewService);
         ShowStatus($"正在查看「{project.Name}」");
     }
 

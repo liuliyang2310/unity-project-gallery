@@ -13,6 +13,7 @@ public sealed class ProjectDetailViewModel : ObservableObject
     private readonly IProjectLaunchService _projectLaunchService;
     private readonly IProjectPathPicker _projectPathPicker;
     private readonly IProjectFolderRevealService _folderRevealService;
+    private readonly IAssetPreviewService _assetPreviewService;
 
     private bool _isLaunching;
     private bool _isEditingDescription;
@@ -32,7 +33,8 @@ public sealed class ProjectDetailViewModel : ObservableObject
         Action<string> showStatus,
         IProjectLaunchService projectLaunchService,
         IProjectPathPicker projectPathPicker,
-        IProjectFolderRevealService folderRevealService)
+        IProjectFolderRevealService folderRevealService,
+        IAssetPreviewService assetPreviewService)
     {
         ArgumentNullException.ThrowIfNull(project);
         ArgumentNullException.ThrowIfNull(goBack);
@@ -40,6 +42,7 @@ public sealed class ProjectDetailViewModel : ObservableObject
         ArgumentNullException.ThrowIfNull(projectLaunchService);
         ArgumentNullException.ThrowIfNull(projectPathPicker);
         ArgumentNullException.ThrowIfNull(folderRevealService);
+        ArgumentNullException.ThrowIfNull(assetPreviewService);
 
         Project = project;
         _goBack = goBack;
@@ -47,11 +50,13 @@ public sealed class ProjectDetailViewModel : ObservableObject
         _projectLaunchService = projectLaunchService;
         _projectPathPicker = projectPathPicker;
         _folderRevealService = folderRevealService;
+        _assetPreviewService = assetPreviewService;
 
         BackCommand = new RelayCommand(_goBack);
         OpenProjectCommand = new RelayCommand(() => _ = LaunchProjectAsync());
         RelinkProjectCommand = new RelayCommand(RelinkProject);
         RevealProjectCommand = new RelayCommand(RevealProject);
+        BrowseAssetsCommand = new RelayCommand(BrowseAssets);
 
         EditDescriptionCommand = new RelayCommand(BeginEditDescription);
         SaveDescriptionCommand = new RelayCommand(SaveDescription);
@@ -75,6 +80,8 @@ public sealed class ProjectDetailViewModel : ObservableObject
     public RelayCommand RelinkProjectCommand { get; }
 
     public RelayCommand RevealProjectCommand { get; }
+
+    public RelayCommand BrowseAssetsCommand { get; }
 
     public RelayCommand EditDescriptionCommand { get; }
 
@@ -195,6 +202,34 @@ public sealed class ProjectDetailViewModel : ObservableObject
         }
 
         _showStatus($"已在资源管理器中打开 Assets 文件夹：{assetsPath}");
+    }
+
+    private void BrowseAssets()
+    {
+        var projectPath = Project.ProjectPath;
+        if (!Directory.Exists(projectPath))
+        {
+            _showStatus($"工程路径不存在：{projectPath}");
+            return;
+        }
+
+        var assetsPath = Path.Combine(projectPath, "Assets");
+        if (!Directory.Exists(assetsPath))
+        {
+            _showStatus("未找到工程的 Assets 文件夹，无法预览资源。");
+            return;
+        }
+
+        try
+        {
+            _showStatus("正在打开 Assets 预览…");
+            _assetPreviewService.ShowAssetBrowser(Project.Name, projectPath);
+            _showStatus("Assets 预览已关闭。");
+        }
+        catch (Exception exception)
+        {
+            _showStatus($"无法打开 Assets 预览：{exception.Message}");
+        }
     }
 
     private void RelinkProject()

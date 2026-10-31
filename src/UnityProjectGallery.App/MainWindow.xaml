@@ -76,7 +76,7 @@
             <StackPanel Grid.Column="2"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <Border Margin="0,0,14,0"
+                <!-- <Border Margin="0,0,14,0"
                         Padding="8,3"
                         Background="{StaticResource SurfaceSunkenBrush}"
                         BorderBrush="{StaticResource BorderBrush}"
@@ -86,7 +86,7 @@
                     <TextBlock Text="第六阶段"
                                FontSize="10"
                                Foreground="{StaticResource TextSecondaryBrush}" />
-                </Border>
+                </Border> -->
 
                 <Button Style="{StaticResource Button.Window}"
                         Click="OnMinimizeClicked"
@@ -317,11 +317,6 @@
                                TextTrimming="CharacterEllipsis"
                                VerticalAlignment="Center" />
                 </StackPanel>
-                <TextBlock Text="第六阶段 · 本地持久化"
-                           HorizontalAlignment="Right"
-                           FontSize="10"
-                           Foreground="{StaticResource TextMutedBrush}"
-                           VerticalAlignment="Center" />
             </Grid>
         </Border>
 

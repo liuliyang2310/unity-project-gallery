@@ -138,12 +138,20 @@ public sealed class ProjectEditingTests
             _ => { },
             new StubLaunchService(),
             new StubPathPicker(),
-            new StubRevealService());
+            new StubRevealService(),
+            new StubAssetPreviewService());
     }
 
     private sealed class StubPathPicker : IProjectPathPicker
     {
         public string? PickProjectDirectory() => null;
+    }
+
+    private sealed class StubAssetPreviewService : IAssetPreviewService
+    {
+        public void ShowAssetBrowser(string projectName, string projectPath)
+        {
+        }
     }
 
     private sealed class StubRevealService : IProjectFolderRevealService

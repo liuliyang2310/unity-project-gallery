@@ -1,7 +1,7 @@
-# Unity Project Gallery · v0.9.0-beta
+# Unity Project Gallery · v0.11.0-beta
 
 **状态：对外测试版（Beta）**  
-**发布包：`UnityProjectGallery-0.9.0-beta-win-x64.zip`**  
+**发布包：`UnityProjectGallery-0.11.0-beta-win-x64.zip`**  
 **发布日期：2026-10-31**
 
 ---
@@ -20,6 +20,8 @@
 
 - Windows 10（22H2 或更新）或 Windows 11，64 位。
 - 发布包已包含 .NET 运行时，**无需另外安装 .NET**。
+- 模型预览所需的 Assimp 原生库已随包提供，**无需另外安装**。
+- 音频播放所需的 NAudio / NAudio.Vorbis 已随包提供，**无需另外安装**。
 - 建议安装 FFmpeg / FFprobe（见下方说明）。
 - 本机 Unity Editor 可选；没有 Editor 时仍可浏览工程与素材。
 
@@ -33,6 +35,7 @@
 - 路径失效提示与重新关联。
 - 搜索、排序、分类、最近打开/收藏筛选。
 - Unity Editor 管理：手动添加、自动读取版本、多路径、状态检测、默认启动版本、删除失效记录。
+- Assets 资源预览：模型 glTF / GLB / OBJ / FBX、图片 PNG / JPG / BMP / GIF / TIFF / WebP、音频 WAV / MP3 / OGG / AIFF / FLAC / M4A；支持搜索、分类筛选、旋转、缩放、视角重置、播放/暂停、进度拖动与打开所在文件夹。
 
 ## FFmpeg 说明
 
@@ -72,7 +75,12 @@
 - Unity Editor 自动发现仅覆盖常见安装目录；非标准路径请到设置页手动添加。
 - 「默认启动版本」只在找不到工程精确版本时使用；用较低版本打开高版本工程时，Unity 可能提示升级工程。
 - 视频播放与封面提取依赖系统解码器和 FFmpeg，不同机器表现可能不同。
-- 仅索引 `_ProjectPreview/`，不会扫描 `Screenshots`、`Videos` 等其他目录。
+- 模型预览仅支持静态网格：不加载动画、骨骼、蒙皮或 Unity 材质，也不使用贴图与 Shader；显示效果与 Unity 编辑器可能不同。
+- 图片预览不应用 Unity 的导入设置、压缩格式、Sprite 切分或滤镜；WebP 等格式依赖系统 WIC 图像编解码器，GIF/TIFF 多帧只显示首帧，超大图片可能占用较多内存。
+- 音频播放依赖系统音频设备；WAV / MP3 / OGG / AIFF / FLAC / M4A 的解码能力由 NAudio 与系统编解码器决定。
+- FBX / glTF / GLB / OBJ 的实际解析能力由 Assimp 决定；极少数特殊导出设置或损坏文件可能无法显示。
+- 单个模型超过 200 万顶点或三角面时会停止预览并提示。
+- 仅索引 `_ProjectPreview/`，不会扫描 `Screenshots`、`Videos` 等其他目录；Assets 预览是唯一额外只读访问 `Assets` 的功能。
 - 工程位于只读目录、网络盘或权限受限目录时，`project-gallery.json` 可能写入失败，状态栏会提示，但 SQLite 数据仍会保存。
 - 无安装程序、无代码签名、无自动更新。
 - 中文路径与含空格路径已支持，但仍建议在测试中重点验证。
@@ -85,8 +93,10 @@
 4. 编辑简介、标签、功能、素材说明，重启后确认恢复。
 5. 设置页添加 Unity.exe、设置默认版本、删除失效记录。
 6. 移动工程目录后检查路径失效提示与重新关联。
-7. 快速关闭程序，重新启动确认没有丢失刚编辑的数据。
-8. 检查日志目录是否生成 `unity-project-gallery-*.log`。
+7. 在详情页打开「Assets 预览」，检查模型、图片与音频的筛选、搜索、加载与切换。
+8. 模型检查旋转、平移、缩放与重置视角；图片检查「打开大图」；音频检查播放、暂停、进度拖动与空格快捷键；点击「所在文件夹」确认资源管理器定位到正确的 Assets 子目录。
+9. 快速关闭程序，重新启动确认没有丢失刚编辑的数据。
+10. 检查日志目录是否生成 `unity-project-gallery-*.log`。
 
 ## 干净虚拟机验收清单
 
@@ -100,13 +110,16 @@
 - [ ] 编辑内容重启后仍在。
 - [ ] 设置页添加 Editor、设置默认版本、删除失效路径正常。
 - [ ] 工程移动后路径失效提示与重新关联正常。
+- [ ] 模型预览能打开 Assets 中的模型文件，空目录、损坏文件与切换模型时提示正常。
+- [ ] 图片预览可正常缩放显示并打开大图；音频可播放、暂停、拖动进度，切换资源时停止播放。
+- [ ] 选中模型、图片或音频后，「所在文件夹」能打开资源管理器并定位到对应目录。
 - [ ] 退出后进程正常结束，日志可见。
 
 ## 反馈方式
 
 请通过本项目的 GitHub Issues 反馈，并附上：
 
-- 软件版本（设置页显示，例如 `0.9.0-beta`）
+- 软件版本（设置页显示，例如 `0.11.0-beta`）
 - Windows 版本
 - 操作步骤与预期结果
 - 实际结果与截图
@@ -129,11 +142,11 @@ Windows：
 压缩包 SHA256 见同目录：
 
 ```text
-UnityProjectGallery-0.9.0-beta-win-x64.sha256.txt
+UnityProjectGallery-0.11.0-beta-win-x64.sha256.txt
 ```
 
 PowerShell 校验：
 
 ```powershell
-Get-FileHash .\UnityProjectGallery-0.9.0-beta-win-x64.zip -Algorithm SHA256
+Get-FileHash .\UnityProjectGallery-0.11.0-beta-win-x64.zip -Algorithm SHA256
 ```
