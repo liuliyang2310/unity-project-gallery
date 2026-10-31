@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/brand/png/icon-128.png" width="128" height="128" alt="Unity Project Gallery logo">
+</p>
+
 <h1 align="center">Unity Project Gallery</h1>
 
 <p align="center">
@@ -19,7 +23,6 @@
   <a href="#预览边界">预览边界</a> ·
   <a href="#实现细节">实现细节</a> ·
   <a href="#快速开始">快速开始</a> ·
-  <a href="#下载">下载</a> ·
   <a href="#数据与隐私">数据与隐私</a> ·
   <a href="#反馈">反馈</a>
 </p>
@@ -97,7 +100,9 @@
 ### Assets 里的模型、图片、音频直接看
 
 <p align="center">
-  <b>项目详情页 →「Assets 预览」</b>
+  <img src="docs/screenshots/04-assetpreview.png" alt="Assets 预览窗口：左侧资源列表与类型筛选，右侧为模型 3D 视口" width="100%">
+  <br>
+  <sub>Assets 预览：左侧按模型 / 图片 / 音频筛选并搜索，右侧模型支持旋转、平移与缩放。</sub>
 </p>
 
 独立窗口按需扫描工程 <code>Assets</code> 目录，按「全部 / 模型 / 图片 / 音频」筛选，并支持按文件名或相对路径搜索。
@@ -205,25 +210,6 @@ FFmpeg 查找顺序：构造函数显式传入（测试使用）→ 环境变量
 
 <br>
 
-## 下载
-
-发布包由脚本生成，输出到 <code>release/</code>：
-
-```powershell
-.\scripts\publish-beta.ps1 -Version 0.11.0-beta -Runtime win-x64
-```
-
-| 构建 | 文件 | 说明 |
-|---|---|---|
-| Windows x64 | `UnityProjectGallery-0.11.0-beta-win-x64.zip` | 自包含运行时，无需另装 .NET |
-| 校验文件 | `UnityProjectGallery-0.11.0-beta-win-x64.sha256.txt` | ZIP 的 SHA256 |
-
-发布包解压后直接运行 <code>UnityProjectGallery.App.exe</code>，无需安装。历史版本与发布说明见 [GitHub Releases](https://github.com/liuliyang2310/unity-project-gallery/releases)；Beta 版说明、数据位置与测试重点见 [BETA_RELEASE_NOTES.md](BETA_RELEASE_NOTES.md)。
-
-> 发布包未做代码签名，Windows SmartScreen 可能提示；确认来源后选择「更多信息 → 仍要运行」。
-
-<br>
-
 ## 数据与隐私
 
 所有数据都保存在本机，不需要账号，不连接云端，不上传工程内容与素材。
@@ -267,9 +253,3 @@ FFmpeg 查找顺序：构造函数显式传入（测试使用）→ 环境变量
 第三方组件与许可证说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 <sub>Unity 是 Unity Technologies 的商标。本项目是独立的开源工具，与 Unity Technologies 无隶属关系；相关名称仅用于描述其兼容的工程格式。</sub>
-
-<br>
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=liuliyang2310/unity-project-gallery&type=Date&legend=top-left)](https://www.star-history.com/?repos=liuliyang2310%2Funity-project-gallery&type=date&legend=top-left)

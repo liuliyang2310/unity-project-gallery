@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Unity Project Gallery</title>
+  <defs>
+    <linearGradient id="tile" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#182034" />
+      <stop offset="0.55" stop-color="#101623" />
+      <stop offset="1" stop-color="#090C13" />
+    </linearGradient>
+    <linearGradient id="cardFront" x1="0.08" y1="0" x2="0.92" y2="1">
+      <stop offset="0" stop-color="#8CA4FF" />
+      <stop offset="0.5" stop-color="#6C8BFF" />
+      <stop offset="1" stop-color="#A46BFF" />
+    </linearGradient>
+    <linearGradient id="cardBack" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#26324A" />
+      <stop offset="1" stop-color="#161E2C" />
+    </linearGradient>
+    <linearGradient id="cardSheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22" />
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0.04" />
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#6C8BFF" stop-opacity="0.36" />
+      <stop offset="0.62" stop-color="#6C8BFF" stop-opacity="0.12" />
+      <stop offset="1" stop-color="#6C8BFF" stop-opacity="0" />
+    </radialGradient>
+    <filter id="cardShadow" x="-40%" y="-40%" width="180%" height="190%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#04060B" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <!-- 应用底板：深色圆角方块 -->
+  <rect x="16" y="16" width="480" height="480" rx="116" fill="url(#tile)" stroke="#2B3550" stroke-width="2" />
+  <rect x="17.5" y="17.5" width="477" height="477" rx="114.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="3" />
+  <ellipse cx="256" cy="300" rx="185" ry="165" fill="url(#glow)" />
+
+  <!-- 后层卡片 -->
+  <g transform="rotate(-13 256 270)">
+    <rect x="128" y="150" width="176" height="232" rx="26" fill="url(#cardBack)" stroke="#33415C" stroke-width="2" />
+  </g>
+
+  <!-- 中层卡片 -->
+  <g transform="rotate(11 256 270)">
+    <rect x="208" y="140" width="176" height="232" rx="26" fill="#1B2434" stroke="#3A4864" stroke-width="2" />
+  </g>
+
+  <!-- 前层卡片：强调色渐变 -->
+  <g filter="url(#cardShadow)">
+    <rect x="150" y="146" width="212" height="236" rx="30" fill="url(#cardFront)" />
+    <rect x="150" y="146" width="212" height="236" rx="30" fill="url(#cardSheen)" />
+    <rect x="151.5" y="147.5" width="209" height="233" rx="28.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.28" stroke-width="3" />
+  </g>
+
+  <!-- 项目立方体：代表 Unity 工程 -->
+  <g stroke="#FFFFFF" stroke-opacity="0.92" stroke-width="2.5" stroke-linejoin="round">
+    <polygon points="256,198 322,236 256,274 190,236" fill="#FFFFFF" fill-opacity="0.98" />
+    <polygon points="190,236 256,274 256,340 190,302" fill="#FFFFFF" fill-opacity="0.58" />
+    <polygon points="322,236 322,302 256,340 256,274" fill="#FFFFFF" fill-opacity="0.80" />
+  </g>
+</svg>

@@ -9,6 +9,7 @@
     <Version>0.11.0-beta</Version>
     <Product>Unity Project Gallery</Product>
     <Description>本地 Unity 工程展示与管理工具（Beta）</Description>
+    <ApplicationIcon>Assets\UnityProjectGallery.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,10 @@
   <ItemGroup>
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\UnityProjectGallery.ico" />
   </ItemGroup>
 
 </Project>
