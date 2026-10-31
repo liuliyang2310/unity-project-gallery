@@ -1,0 +1,334 @@
+<Window x:Class="UnityProjectGallery.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Unity Project Gallery"
+        Width="1440"
+        Height="900"
+        MinWidth="1040"
+        MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        Background="{StaticResource WindowBackgroundBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
+        FontFamily="{StaticResource AppFontFamily}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="44"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      CornerRadius="0"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="WindowRoot" Background="{StaticResource WindowBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="28" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="248" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 自定义标题栏 -->
+        <Grid Grid.Row="0"
+              Grid.ColumnSpan="2"
+              Background="{StaticResource TitleBarBackgroundBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Margin="16,0,0,0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                <Border Width="26"
+                        Height="26"
+                        Background="{StaticResource AccentGradientBrush}"
+                        CornerRadius="8">
+                    <TextBlock Text="UG"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Border>
+                <TextBlock Text="Unity Project Gallery"
+                           Margin="10,0,0,0"
+                           FontSize="12.5"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           VerticalAlignment="Center" />
+                <TextBlock Text="· 本地工程库"
+                           Margin="6,0,0,0"
+                           FontSize="11"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Border Margin="0,0,14,0"
+                        Padding="8,3"
+                        Background="{StaticResource SurfaceSunkenBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="999"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="第六阶段"
+                               FontSize="10"
+                               Foreground="{StaticResource TextSecondaryBrush}" />
+                </Border>
+
+                <Button Style="{StaticResource Button.Window}"
+                        Click="OnMinimizeClicked"
+                        ToolTip="最小化"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <TextBlock Text="&#xE921;"
+                               FontFamily="{StaticResource IconFontFamily}"
+                               FontSize="10" />
+                </Button>
+                <Button x:Name="MaximizeButton"
+                        Style="{StaticResource Button.Window}"
+                        Click="OnMaximizeRestoreClicked"
+                        ToolTip="最大化"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <TextBlock x:Name="MaximizeGlyph"
+                               Text="&#xE922;"
+                               FontFamily="{StaticResource IconFontFamily}"
+                               FontSize="10" />
+                </Button>
+                <Button Style="{StaticResource Button.WindowClose}"
+                        Click="OnCloseClicked"
+                        ToolTip="关闭"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <TextBlock Text="&#xE8BB;"
+                               FontFamily="{StaticResource IconFontFamily}"
+                               FontSize="10" />
+                </Button>
+            </StackPanel>
+
+            <Border Grid.ColumnSpan="3"
+                    Height="1"
+                    Background="{StaticResource DividerBrush}"
+                    VerticalAlignment="Bottom" />
+        </Grid>
+
+        <!-- 左侧导航栏 -->
+        <Border Grid.Row="1"
+                Grid.Column="0"
+                Background="{StaticResource SidebarBackgroundBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,1,0">
+            <Grid Margin="14,18,14,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="浏览"
+                           Style="{StaticResource Text.SidebarSection}" />
+
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding NavigationItems}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton Style="{StaticResource ToggleButton.Nav}"
+                                          Margin="0,2"
+                                          IsChecked="{Binding IsActive, Mode=OneWay}"
+                                          Command="{Binding Command}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="24" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Glyph}"
+                                               Style="{StaticResource Text.Icon}"
+                                               FontSize="14" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding Title}"
+                                               Margin="2,0,0,0"
+                                               FontSize="12.5"
+                                               VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding Count}"
+                                               FontSize="10.5"
+                                               Foreground="{StaticResource TextMutedBrush}"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+                            </ToggleButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Border Grid.Row="2"
+                        Height="1"
+                        Margin="4,16,4,16"
+                        Background="{StaticResource DividerBrush}" />
+
+                <Grid Grid.Row="3" Margin="10,0,10,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="分类"
+                               Style="{StaticResource Text.SidebarSection}"
+                               Margin="0" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding Gallery.TotalCount}"
+                               FontSize="10.5"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               VerticalAlignment="Center" />
+                </Grid>
+
+                <ScrollViewer Grid.Row="4"
+                              Margin="0,0,0,8"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Gallery.Categories}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ToggleButton Style="{StaticResource ToggleButton.Category}"
+                                              Margin="0,1"
+                                              IsChecked="{Binding IsSelected, Mode=OneWay}"
+                                              Command="{Binding Command}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Count}"
+                                                   FontSize="10.5"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                </ToggleButton>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="5" Margin="0,8,0,0">
+                    <ToggleButton Style="{StaticResource ToggleButton.Nav}"
+                                  Margin="0,0,0,8"
+                                  IsChecked="{Binding IsSettingsPageActive, Mode=OneWay}"
+                                  Command="{Binding OpenSettingsCommand}"
+                                  AutomationProperties.AutomationId="SettingsNavButton"
+                                  ToolTip="打开 Unity Editor 管理">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE713;"
+                                       Style="{StaticResource Text.Icon}"
+                                       FontSize="14" />
+                            <TextBlock Grid.Column="1"
+                                       Text="Unity Editor 管理"
+                                       Margin="2,0,0,0"
+                                       FontSize="12.5"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </ToggleButton>
+
+                    <Border Padding="12"
+                        Background="{StaticResource SurfaceSunkenBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="28"
+                                Height="28"
+                                Background="{StaticResource SuccessSoftBrush}"
+                                CornerRadius="8"
+                                VerticalAlignment="Top">
+                            <TextBlock Text="&#xE72E;"
+                                       FontFamily="{StaticResource IconFontFamily}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource SuccessBrush}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <TextBlock Text="原始工程只读"
+                                       FontSize="11.5"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextPrimaryBrush}" />
+                            <TextBlock Text="扫描、预览与展示都不会修改本地 Unity 工程文件。"
+                                       Margin="0,3,0,0"
+                                       FontSize="10.5"
+                                       LineHeight="15"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 页面容器 -->
+        <Grid Grid.Row="1" Grid.Column="1" Background="{StaticResource WindowBackgroundBrush}">
+            <ContentControl Content="{Binding CurrentPage}"
+                            Focusable="False"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch" />
+        </Grid>
+
+        <!-- 状态栏 -->
+        <Border Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Background="{StaticResource SidebarBackgroundBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+            <Grid Margin="16,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE946;"
+                               FontFamily="{StaticResource IconFontFamily}"
+                               FontSize="10"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Margin="6,0,0,0"
+                               FontSize="10.5"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock Text="第六阶段 · 本地持久化"
+                           HorizontalAlignment="Right"
+                           FontSize="10"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Border Grid.RowSpan="3"
+                Grid.ColumnSpan="2"
+                BorderBrush="{StaticResource WindowBorderBrush}"
+                BorderThickness="1"
+                IsHitTestVisible="False" />
+    </Grid>
+</Window>

@@ -1,0 +1,26 @@
+# Build output
+bin/
+obj/
+*.pdb
+
+# IDE and user settings
+.vs/
+.vscode/
+*.user
+*.suo
+*.userprefs
+*.DotSettings.user
+
+# Test and coverage output
+TestResults/
+coverage*.xml
+coverage*.json
+
+# Local release artifacts and verification output
+release/
+.screenshots/
+*.log
+
+# OS files
+Thumbs.db
+.DS_Store

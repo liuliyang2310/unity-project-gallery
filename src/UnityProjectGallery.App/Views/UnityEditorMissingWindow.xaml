@@ -1,0 +1,151 @@
+<Window x:Class="UnityProjectGallery.App.Views.UnityEditorMissingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="Unity Editor 未找到"
+        Width="560"
+        Height="330"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Background="{StaticResource WindowBackgroundBrush}"
+        Foreground="{StaticResource TextPrimaryBrush}"
+        FontFamily="{StaticResource AppFontFamily}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="44"
+                      ResizeBorderThickness="0"
+                      GlassFrameThickness="0"
+                      CornerRadius="0"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Border Background="{StaticResource WindowBackgroundBrush}"
+            BorderBrush="{StaticResource WindowBorderBrush}"
+            BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="44" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Background="{StaticResource TitleBarBackgroundBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Unity Editor 未找到"
+                           Margin="16,0,0,0"
+                           FontSize="12.5"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <Button Grid.Column="1"
+                        Style="{StaticResource Button.WindowClose}"
+                        Click="OnCancelClicked"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <TextBlock Text="&#xE8BB;"
+                               FontFamily="{StaticResource IconFontFamily}"
+                               FontSize="10" />
+                </Button>
+                <Border Grid.ColumnSpan="2"
+                        Height="1"
+                        Background="{StaticResource DividerBrush}"
+                        VerticalAlignment="Bottom" />
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="24,20,24,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="42"
+                            Height="42"
+                            Background="{StaticResource AccentSoftBrush}"
+                            BorderBrush="{StaticResource AccentBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            VerticalAlignment="Top">
+                        <TextBlock Text="&#xE946;"
+                                   FontFamily="{StaticResource IconFontFamily}"
+                                   FontSize="18"
+                                   Foreground="{StaticResource AccentOnDarkBrush}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="14,0,0,0">
+                        <TextBlock Text="未找到匹配版本的 Unity Editor"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                        <TextBlock x:Name="VersionText"
+                                   Margin="0,6,0,0"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+                        <TextBlock x:Name="ProjectText"
+                                   Margin="0,4,0,0"
+                                   FontSize="11.5"
+                                   LineHeight="17"
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Grid.Row="1"
+                           Margin="0,18,0,0"
+                           MaxWidth="500"
+                           FontSize="11.5"
+                           LineHeight="18"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top">
+                    可以选择一个已安装的其他 Unity Editor 来打开工程，或通过 Unity Hub 打开。所选编辑器路径会在本次运行期间记住。
+                </TextBlock>
+
+                <StackPanel Grid.Row="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button Style="{StaticResource Button.Ghost}"
+                            Height="34"
+                            Command="{x:Null}"
+                            Click="OnCancelClicked"
+                            Content="取消" />
+                    <Button Style="{StaticResource Button.Secondary}"
+                            Height="34"
+                            Margin="10,0,0,0"
+                            Click="OnUseHubClicked">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE774;"
+                                       Style="{StaticResource Text.Icon}"
+                                       FontSize="11"
+                                       Margin="0,0,6,0" />
+                            <TextBlock Text="通过 Unity Hub 打开" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource Button.Primary}"
+                            Height="34"
+                            Margin="10,0,0,0"
+                            Click="OnChooseEditorClicked">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8E5;"
+                                       Style="{StaticResource Text.Icon}"
+                                       FontSize="11"
+                                       Margin="0,0,6,0" />
+                            <TextBlock Text="选择其他 Unity Editor" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

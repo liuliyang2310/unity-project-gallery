@@ -1,0 +1,1233 @@
+<UserControl x:Class="UnityProjectGallery.App.Views.ProjectDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:UnityProjectGallery.App.Behaviors"
+             Background="Transparent"
+             Focusable="False">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <Grid Margin="28,18,28,28"
+              MaxWidth="1320"
+              HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- 顶部操作 -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button Style="{StaticResource Button.Ghost}"
+                        Command="{Binding BackCommand}"
+                        HorizontalAlignment="Left"
+                        ToolTip="返回项目库">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE72B;"
+                                   Style="{StaticResource Text.Icon}"
+                                   FontSize="11"
+                                   Margin="0,0,7,0" />
+                        <TextBlock Text="返回项目库" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <ToggleButton Style="{StaticResource ToggleButton.DetailFavorite}"
+                                  Margin="0,0,10,0"
+                                  IsChecked="{Binding Project.IsFavorite, Mode=OneWay}"
+                                  Command="{Binding Project.ToggleFavoriteCommand}" />
+                    <Button Style="{StaticResource Button.Secondary}"
+                            Margin="0,0,10,0"
+                            Command="{Binding RevealProjectCommand}"
+                            AutomationProperties.AutomationId="RevealProjectButton"
+                            ToolTip="在资源管理器中打开工程的 Assets 文件夹">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8B7;"
+                                       Style="{StaticResource Text.Icon}"
+                                       FontSize="12"
+                                       Margin="0,0,6,0" />
+                            <TextBlock Text="定位工程" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource Button.Primary}"
+                            Command="{Binding OpenProjectCommand}"
+                            ToolTip="使用对应版本的 Unity Editor 打开工程">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE768;"
+                                       Style="{StaticResource Text.Icon}"
+                                       FontSize="11"
+                                       Margin="0,0,7,0" />
+                            <TextBlock Text="打开工程" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- 工程标题 -->
+            <StackPanel Grid.Row="1" Margin="0,22,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Project.Name}"
+                               FontSize="30"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center" />
+                    <Border Grid.Column="1"
+                            Margin="14,0,0,0"
+                            Padding="9,4"
+                            Background="{StaticResource SurfaceElevatedBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="7"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Project.UnityVersionDisplay}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondaryBrush}" />
+                    </Border>
+                </Grid>
+
+                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                    <TextBlock Text="&#xE8B7;"
+                               Style="{StaticResource Text.Icon}"
+                               FontSize="11"
+                               Foreground="{StaticResource TextMutedBrush}" />
+                    <TextBlock Text="{Binding Project.ProjectPath}"
+                               Margin="7,0,0,0"
+                               FontFamily="{StaticResource MonoFontFamily}"
+                               FontSize="11.5"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Border Margin="0,10,0,0"
+                        Padding="10,8"
+                        Background="#26171A"
+                        BorderBrush="#5A3035"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Visibility="{Binding Project.IsProjectPathMissing, Converter={StaticResource BoolToVisibility}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="&#xE7BA;"
+                                   Style="{StaticResource Text.Icon}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource DangerBrush}"
+                                   VerticalAlignment="Top"
+                                   Margin="0,2,0,0" />
+                        <StackPanel Grid.Column="1" Margin="8,0,10,0">
+                            <TextBlock Text="工程路径不存在，可能已被移动"
+                                       FontSize="11.5"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource DangerBrush}" />
+                            <TextBlock Text="重新关联到移动后的 Unity 工程目录后，可继续启动并刷新素材索引。"
+                                       Margin="0,3,0,0"
+                                       FontSize="10.5"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                        <Button Grid.Column="2"
+                                Style="{StaticResource Button.Secondary}"
+                                Height="28"
+                                Padding="10,0"
+                                VerticalAlignment="Center"
+                                Command="{Binding RelinkProjectCommand}"
+                                Content="重新关联" />
+                    </Grid>
+                </Border>
+
+                <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding Project.Tags}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource Border.TagChip}"
+                                    Margin="0,0,6,0">
+                                <TextBlock Text="{Binding}"
+                                           FontSize="10.5"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- 封面 -->
+            <Border Grid.Row="2"
+                    Height="186"
+                    Margin="0,18,0,0"
+                    CornerRadius="18"
+                    ClipToBounds="True">
+                <Grid>
+                    <Border Background="{Binding Project.Name, Converter={StaticResource CoverBrush}}" />
+
+                    <Ellipse Width="260"
+                             Height="260"
+                             Margin="0,0,42,-40"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Bottom"
+                             Stroke="#33FFFFFF"
+                             StrokeThickness="1" />
+                    <Ellipse Width="120"
+                             Height="120"
+                             Margin="0,0,110,-10"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Bottom"
+                             Stroke="#26FFFFFF"
+                             StrokeThickness="1" />
+
+                    <Image Source="{Binding Project.CoverImagePath, Converter={StaticResource ImagePath}, ConverterParameter=1400}"
+                           Stretch="UniformToFill"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+
+                    <Border Background="{StaticResource HeroShadeBrush}" />
+
+                    <TextBlock Text="{Binding Project.Name, Converter={StaticResource ProjectInitial}}"
+                               FontSize="96"
+                               FontWeight="Bold"
+                               Foreground="#26FFFFFF"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               Margin="0,0,96,0"
+                               IsHitTestVisible="False"
+                               Visibility="{Binding Project.CoverImagePath, Converter={StaticResource StringVisibility}}" />
+
+                    <Border Margin="14"
+                            Padding="9,5"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="{StaticResource CoverChipBrush}"
+                            BorderBrush="{StaticResource CoverChipBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="7"
+                            Visibility="{Binding Project.CoverImagePath, Converter={StaticResource StringVisibility}}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE946;"
+                                       FontFamily="{StaticResource IconFontFamily}"
+                                       FontSize="10"
+                                       Foreground="#D9FFFFFF"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="封面占位 · 素材扫描后读取"
+                                       Margin="6,0,0,0"
+                                       FontSize="10"
+                                       Foreground="#D9FFFFFF"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Margin="18"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom">
+                        <Border Padding="10,5"
+                                Background="{StaticResource CoverChipBrush}"
+                                BorderBrush="{StaticResource CoverChipBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="7">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE91B;"
+                                           FontFamily="{StaticResource IconFontFamily}"
+                                           FontSize="11"
+                                           Foreground="#D9FFFFFF"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Project.ScreenshotCount}"
+                                           Margin="6,0,0,0"
+                                           FontSize="11"
+                                           Foreground="#F2FFFFFF"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text=" 张截图"
+                                           FontSize="10"
+                                           Foreground="#BFFFFFFF"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Margin="8,0,0,0"
+                                Padding="10,5"
+                                Background="{StaticResource CoverChipBrush}"
+                                BorderBrush="{StaticResource CoverChipBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="7">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE714;"
+                                           FontFamily="{StaticResource IconFontFamily}"
+                                           FontSize="11"
+                                           Foreground="#D9FFFFFF"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Project.VideoCount}"
+                                           Margin="6,0,0,0"
+                                           FontSize="11"
+                                           Foreground="#F2FFFFFF"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text=" 个视频"
+                                           FontSize="10"
+                                           Foreground="#BFFFFFFF"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 详情内容 -->
+            <Grid Grid.Row="3" Margin="0,20,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="330" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- 项目简介 -->
+                    <Border Grid.Row="0" Style="{StaticResource Border.SectionCard}">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="项目简介" Style="{StaticResource Text.SectionTitle}" />
+                                <Button Grid.Column="1"
+                                        Style="{StaticResource Button.Ghost}"
+                                        Height="26"
+                                        Padding="8,0"
+                                        Command="{Binding EditDescriptionCommand}"
+                                        Visibility="{Binding IsEditingDescription, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE70F;"
+                                                   Style="{StaticResource Text.Icon}"
+                                                   FontSize="10"
+                                                   Margin="0,0,6,0" />
+                                        <TextBlock Text="编辑简介" FontSize="10.5" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <Border Height="1"
+                                    Margin="0,14,0,0"
+                                    Background="{StaticResource DividerBrush}" />
+                            <TextBlock Margin="0,14,0,0"
+                                       Style="{StaticResource Text.Body}"
+                                       TextWrapping="Wrap"
+                                       behaviors:LinkedTextBehavior.Text="{Binding Project.DescriptionDisplay}"
+                                       Visibility="{Binding IsEditingDescription, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+
+                            <Border Margin="0,12,0,0"
+                                    Padding="10"
+                                    Background="{StaticResource SurfaceSunkenBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Visibility="{Binding IsEditingDescription, Converter={StaticResource BoolToVisibility}}">
+                                <StackPanel>
+                                    <TextBox Style="{StaticResource TextBox.Editor}"
+                                             Text="{Binding DescriptionDraft, UpdateSourceTrigger=PropertyChanged}"
+                                             MinHeight="86"
+                                             MaxHeight="170" />
+                                    <StackPanel Margin="0,10,0,0"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Right">
+                                        <Button Style="{StaticResource Button.Ghost}"
+                                                Height="28"
+                                                Command="{Binding CancelDescriptionCommand}"
+                                                Content="取消" />
+                                        <Button Style="{StaticResource Button.Primary}"
+                                                Height="28"
+                                                Padding="12,0"
+                                                Margin="8,0,0,0"
+                                                Command="{Binding SaveDescriptionCommand}"
+                                                Content="保存简介" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 依赖包 -->
+                    <Border Grid.Row="3" Style="{StaticResource Border.SectionCard}" Margin="0,18,0,0">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="依赖包" Style="{StaticResource Text.SectionTitle}" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Project.PackageSummary}"
+                                           Style="{StaticResource Text.Caption}"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                            <TextBlock Text="来自 Packages/manifest.json，只读展示。"
+                                       Margin="0,4,0,0"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextMutedBrush}" />
+                            <Border Height="1"
+                                    Margin="0,12,0,0"
+                                    Background="{StaticResource DividerBrush}" />
+
+                            <ScrollViewer MaxHeight="180"
+                                          Margin="0,2,0,0"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto"
+                                          Visibility="{Binding Project.HasPackages, Converter={StaticResource BoolToVisibility}}">
+                                <ItemsControl ItemsSource="{Binding Project.Packages}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="0,7"
+                                                    BorderBrush="{StaticResource DividerBrush}"
+                                                    BorderThickness="0,0,0,1">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               Margin="0,0,12,0"
+                                                               FontSize="11.5"
+                                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Version}"
+                                                               FontFamily="{StaticResource MonoFontFamily}"
+                                                               FontSize="11"
+                                                               Foreground="{StaticResource TextMutedBrush}" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                            <TextBlock Text="manifest.json 中未找到依赖声明。"
+                                       Margin="0,12,0,0"
+                                       FontSize="11.5"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       Visibility="{Binding Project.HasPackages, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 功能模块 -->
+                    <Border Grid.Row="2" Style="{StaticResource Border.SectionCard}" Margin="0,18,0,0">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="功能模块" Style="{StaticResource Text.SectionTitle}" />
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Project.FeatureSummary}"
+                                               Style="{StaticResource Text.Caption}" />
+                                    <Button Style="{StaticResource Button.Secondary}"
+                                            Height="28"
+                                            Padding="10,0"
+                                            Margin="10,0,0,0"
+                                            Command="{Binding AddFeatureCommand}"
+                                            Visibility="{Binding IsEditingFeature, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="&#xE710;"
+                                                       Style="{StaticResource Text.Icon}"
+                                                       FontSize="10"
+                                                       Margin="0,0,6,0" />
+                                            <TextBlock Text="添加功能" FontSize="10.5" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="为工程添加功能说明，并关联 _ProjectPreview 中的图片或视频。"
+                                       Margin="0,4,0,0"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextMutedBrush}" />
+                            <Border Height="1"
+                                    Margin="0,12,0,0"
+                                    Background="{StaticResource DividerBrush}" />
+
+                            <!-- 功能编辑面板 -->
+                            <Border Margin="0,14,0,0"
+                                    Padding="14"
+                                    Background="{StaticResource SurfaceSunkenBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Visibility="{Binding IsEditingFeature, Converter={StaticResource BoolToVisibility}}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding FeatureEditorTitle}"
+                                               FontSize="12.5"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryBrush}" />
+
+                                    <TextBlock Text="功能名称"
+                                               Style="{StaticResource Text.InfoLabel}"
+                                               Margin="0,12,0,5" />
+                                    <Border Padding="8,5"
+                                            Background="{StaticResource SurfaceBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="7">
+                                        <TextBox Style="{StaticResource TextBox.Search}"
+                                                 Text="{Binding FeatureNameDraft, UpdateSourceTrigger=PropertyChanged}"
+                                                 FontSize="12" />
+                                    </Border>
+
+                                    <TextBlock Text="功能说明"
+                                               Style="{StaticResource Text.InfoLabel}"
+                                               Margin="0,12,0,5" />
+                                    <Border Padding="8"
+                                            Background="{StaticResource SurfaceBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="7">
+                                        <TextBox Style="{StaticResource TextBox.Editor}"
+                                                 Text="{Binding FeatureDescriptionDraft, UpdateSourceTrigger=PropertyChanged}"
+                                                 MinHeight="56"
+                                                 MaxHeight="120"
+                                                 FontSize="12" />
+                                    </Border>
+
+                                    <TextBlock Text="关联素材"
+                                               Style="{StaticResource Text.InfoLabel}"
+                                               Margin="0,12,0,5" />
+                                    <Border Padding="8"
+                                            Background="{StaticResource SurfaceBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="7"
+                                            Visibility="{Binding Project.HasMedia, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                        <TextBlock Text="当前工程没有可供关联的素材。"
+                                                   FontSize="10.5"
+                                                   Foreground="{StaticResource TextMutedBrush}" />
+                                    </Border>
+                                    <ScrollViewer MaxHeight="180"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  HorizontalScrollBarVisibility="Disabled"
+                                                  Visibility="{Binding Project.HasMedia, Converter={StaticResource BoolToVisibility}}">
+                                        <ItemsControl ItemsSource="{Binding FeatureMediaSelections}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox Style="{StaticResource CheckBox.Dark}"
+                                                              IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding FileName}"
+                                                                       FontSize="11"
+                                                                       TextTrimming="CharacterEllipsis" />
+                                                            <TextBlock Text="{Binding MetadataText}"
+                                                                       FontSize="9.5"
+                                                                       Foreground="{StaticResource TextMutedBrush}" />
+                                                            <TextBlock Text="{Binding AssignmentText}"
+                                                                       FontSize="9.5"
+                                                                       Foreground="{StaticResource TextMutedBrush}" />
+                                                        </StackPanel>
+                                                    </CheckBox>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+
+                                    <StackPanel Margin="0,12,0,0"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Right">
+                                        <Button Style="{StaticResource Button.Ghost}"
+                                                Height="28"
+                                                Command="{Binding CancelFeatureCommand}"
+                                                Content="取消" />
+                                        <Button Style="{StaticResource Button.Primary}"
+                                                Height="28"
+                                                Padding="12,0"
+                                                Margin="8,0,0,0"
+                                                Command="{Binding SaveFeatureCommand}"
+                                                Content="保存功能" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- 空状态 -->
+                            <Border Margin="0,14,0,0"
+                                    Padding="16"
+                                    Background="{StaticResource SurfaceSunkenBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Visibility="{Binding ShowFeatureEmptyState, Converter={StaticResource BoolToVisibility}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="34"
+                                            Height="34"
+                                            Background="{StaticResource AccentSoftBrush}"
+                                            CornerRadius="9"
+                                            VerticalAlignment="Top">
+                                        <TextBlock Text="&#xE8A9;"
+                                                   FontFamily="{StaticResource IconFontFamily}"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource AccentOnDarkBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                        <TextBlock Text="尚未创建功能模块"
+                                                   FontSize="12.5"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                                        <TextBlock Text="添加功能后可在这里整理说明，并勾选关联的截图或视频。"
+                                                   Margin="0,5,0,0"
+                                                   FontSize="11.5"
+                                                   LineHeight="17"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- 功能列表 -->
+                            <ItemsControl Margin="0,14,0,0"
+                                          ItemsSource="{Binding Project.Features}"
+                                          Visibility="{Binding ShowFeatureList, Converter={StaticResource BoolToVisibility}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,8"
+                                                Padding="12"
+                                                Background="{StaticResource SurfaceSunkenBrush}"
+                                                BorderBrush="{StaticResource BorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="10">
+                                            <StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontSize="12.5"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               VerticalAlignment="Center" />
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                        <Button Style="{StaticResource Button.Icon}"
+                                                                Width="24"
+                                                                Height="24"
+                                                                ToolTip="编辑功能"
+                                                                Tag="{Binding}"
+                                                                Click="OnEditFeatureClicked">
+                                                            <TextBlock Text="&#xE70F;"
+                                                                       FontFamily="{StaticResource IconFontFamily}"
+                                                                       FontSize="10" />
+                                                        </Button>
+                                                        <Button Style="{StaticResource Button.Icon}"
+                                                                Width="24"
+                                                                Height="24"
+                                                                Margin="2,0,0,0"
+                                                                ToolTip="删除功能"
+                                                                Tag="{Binding}"
+                                                                Click="OnDeleteFeatureClicked">
+                                                            <TextBlock Text="&#xE74D;"
+                                                                       FontFamily="{StaticResource IconFontFamily}"
+                                                                       FontSize="10" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <TextBlock Text="{Binding Description}"
+                                                           Margin="0,4,0,0"
+                                                           FontSize="11.5"
+                                                           LineHeight="17"
+                                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                                           TextWrapping="Wrap"
+                                                           Visibility="{Binding HasDescription, Converter={StaticResource BoolToVisibility}}" />
+                                                <TextBlock Text="{Binding MediaSummary}"
+                                                           Margin="0,6,0,0"
+                                                           FontSize="10.5"
+                                                           Foreground="{StaticResource TextMutedBrush}" />
+                                                <ItemsControl ItemsSource="{Binding Media}" Margin="0,4,0,0">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <WrapPanel Orientation="Horizontal" />
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Style="{StaticResource Border.TagChip}"
+                                                                    Margin="0,0,6,4"
+                                                                    ToolTip="{Binding RelativePath}">
+                                                                <TextBlock Text="{Binding FileName}"
+                                                                           FontSize="9.5"
+                                                                           Foreground="{StaticResource TextMutedBrush}" />
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <TextBlock Text="一个素材只保留一个功能关联；删除功能不会删除任何素材。"
+                                       Margin="0,8,0,0"
+                                       FontSize="10.5"
+                                       Foreground="{StaticResource TextMutedBrush}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 展示素材 -->
+                    <Border Grid.Row="1" Style="{StaticResource Border.SectionCard}" Margin="0,18,0,0">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="展示素材" Style="{StaticResource Text.SectionTitle}" />
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Project.MediaSummary}"
+                                               Style="{StaticResource Text.Caption}" />
+                                    <Button Style="{StaticResource Button.Ghost}"
+                                            Height="26"
+                                            Padding="8,0"
+                                            Margin="10,0,0,0"
+                                            Command="{Binding Project.ToggleHiddenMediaCommand}"
+                                            Visibility="{Binding Project.CanToggleHiddenMedia, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="{Binding Project.ShowHiddenButtonText}"
+                                                   FontSize="10.5" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="仅读取工程根目录的 _ProjectPreview；缩略图保存在本地缓存，不修改原始工程。"
+                                       Margin="0,4,0,0"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextMutedBrush}" />
+                            <Border Height="1"
+                                    Margin="0,12,0,0"
+                                    Background="{StaticResource DividerBrush}" />
+
+                            <Border Margin="0,14,0,0"
+                                    Padding="16"
+                                    Background="{StaticResource SurfaceSunkenBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Visibility="{Binding Project.HasMedia, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="34"
+                                            Height="34"
+                                            Background="{StaticResource SurfaceElevatedBrush}"
+                                            CornerRadius="9"
+                                            VerticalAlignment="Top">
+                                        <TextBlock Text="&#xE8B7;"
+                                                   FontFamily="{StaticResource IconFontFamily}"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                        <TextBlock Text="未发现展示素材"
+                                                   FontSize="12.5"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" />
+                                        <TextBlock Text="请在工程根目录创建 _ProjectPreview 文件夹，放入图片或视频后重新扫描。"
+                                                   Margin="0,5,0,0"
+                                                   FontSize="11.5"
+                                                   LineHeight="17"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <ItemsControl Margin="0,14,0,0"
+                                          ItemsSource="{Binding Project.DisplayedMedia}"
+                                          Visibility="{Binding Project.HasMedia, Converter={StaticResource BoolToVisibility}}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="168"
+                                                Margin="0,0,12,12"
+                                                Background="{StaticResource SurfaceSunkenBrush}"
+                                                BorderBrush="{StaticResource BorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="12">
+                                            <Border.Style>
+                                                <Style TargetType="{x:Type Border}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsIncluded}" Value="False">
+                                                            <Setter Property="Opacity" Value="0.55" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="102" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+
+                                                <Button Grid.Row="0"
+                                                        Style="{StaticResource Button.MediaPreview}"
+                                                        Command="{Binding OpenCommand}"
+                                                        ToolTip="查看原图 / 播放视频">
+                                                    <Grid ClipToBounds="True">
+                                                        <Border Background="{Binding FileName, Converter={StaticResource CoverBrush}}" />
+                                                        <TextBlock Text="&#xE91B;"
+                                                                   FontFamily="{StaticResource IconFontFamily}"
+                                                                   FontSize="24"
+                                                                   Foreground="#BFFFFFFF"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   Visibility="{Binding IsImage, Converter={StaticResource BoolToVisibility}}" />
+                                                        <TextBlock Text="&#xE714;"
+                                                                   FontFamily="{StaticResource IconFontFamily}"
+                                                                   FontSize="24"
+                                                                   Foreground="#BFFFFFFF"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   Visibility="{Binding IsVideo, Converter={StaticResource BoolToVisibility}}" />
+                                                        <Image Source="{Binding ThumbnailPath, Converter={StaticResource ImagePath}, ConverterParameter=360}"
+                                                               Stretch="UniformToFill"
+                                                               RenderOptions.BitmapScalingMode="HighQuality" />
+                                                        <Border Background="{StaticResource CoverShadeBrush}" />
+
+                                                        <Border Margin="7"
+                                                                Padding="6,3"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Top"
+                                                                Background="{StaticResource CoverChipBrush}"
+                                                                BorderBrush="{StaticResource CoverChipBorderBrush}"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Visibility="{Binding IsCover, Converter={StaticResource BoolToVisibility}}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="&#xE735;"
+                                                                           FontFamily="{StaticResource IconFontFamily}"
+                                                                           FontSize="9"
+                                                                           Foreground="{StaticResource FavoriteBrush}" />
+                                                                <TextBlock Text="封面"
+                                                                           Margin="4,0,0,0"
+                                                                           FontSize="9.5"
+                                                                           Foreground="#F2FFFFFF" />
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <Border Margin="7"
+                                                                Padding="6,3"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Bottom"
+                                                                Background="{StaticResource CoverChipBrush}"
+                                                                BorderBrush="{StaticResource CoverChipBorderBrush}"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Visibility="{Binding IsIncluded, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                                            <TextBlock Text="已移除"
+                                                                       FontSize="9.5"
+                                                                       Foreground="#D9FFFFFF" />
+                                                        </Border>
+
+                                                        <Border Margin="7"
+                                                                Padding="6,3"
+                                                                HorizontalAlignment="Right"
+                                                                VerticalAlignment="Bottom"
+                                                                Background="{StaticResource CoverChipBrush}"
+                                                                BorderBrush="{StaticResource CoverChipBorderBrush}"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Visibility="{Binding IsVideo, Converter={StaticResource BoolToVisibility}}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="&#xE768;"
+                                                                           FontFamily="{StaticResource IconFontFamily}"
+                                                                           FontSize="9"
+                                                                           Foreground="#E8FFFFFF" />
+                                                                <TextBlock Text="{Binding DurationText}"
+                                                                           Margin="4,0,0,0"
+                                                                           FontFamily="{StaticResource MonoFontFamily}"
+                                                                           FontSize="9.5"
+                                                                           Foreground="#F2FFFFFF" />
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <Border Margin="7"
+                                                                Padding="6,3"
+                                                                MaxWidth="104"
+                                                                HorizontalAlignment="Right"
+                                                                VerticalAlignment="Top"
+                                                                Background="{StaticResource CoverChipBrush}"
+                                                                BorderBrush="{StaticResource CoverChipBorderBrush}"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Visibility="{Binding HasFeature, Converter={StaticResource BoolToVisibility}}">
+                                                            <TextBlock Text="{Binding FeatureName}"
+                                                                       FontSize="9.5"
+                                                                       Foreground="#F2FFFFFF"
+                                                                       TextTrimming="CharacterEllipsis" />
+                                                        </Border>
+                                                    </Grid>
+                                                </Button>
+
+                                                <Grid Grid.Row="1" Margin="8,6,5,6">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding FileName}"
+                                                                   FontSize="10.5"
+                                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   ToolTip="{Binding RelativePath}" />
+                                                        <TextBlock Text="{Binding MetadataText}"
+                                                                   Margin="0,2,0,0"
+                                                                   FontSize="9.5"
+                                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding Description}"
+                                                                   Margin="0,2,0,0"
+                                                                   FontSize="9"
+                                                                   Foreground="{StaticResource AccentOnDarkBrush}"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   ToolTip="{Binding Description}"
+                                                                   Visibility="{Binding HasDescription, Converter={StaticResource BoolToVisibility}}" />
+                                                    </StackPanel>
+                                                    <StackPanel Grid.Column="1"
+                                                                Orientation="Horizontal"
+                                                                VerticalAlignment="Center">
+                                                        <Button Style="{StaticResource Button.Icon}"
+                                                                Width="24"
+                                                                Height="24"
+                                                                Command="{Binding SetCoverCommand}"
+                                                                ToolTip="设为项目封面"
+                                                                Visibility="{Binding IsCover, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                                            <TextBlock Text="&#xE734;"
+                                                                       FontFamily="{StaticResource IconFontFamily}"
+                                                                       FontSize="10" />
+                                                        </Button>
+                                                        <Button Style="{StaticResource Button.Icon}"
+                                                                Width="24"
+                                                                Height="24"
+                                                                Margin="2,0,0,0"
+                                                                Tag="{Binding}"
+                                                                Click="OnEditMediaClicked"
+                                                                ToolTip="编辑素材说明">
+                                                            <TextBlock Text="&#xE70F;"
+                                                                       FontFamily="{StaticResource IconFontFamily}"
+                                                                       FontSize="9" />
+                                                        </Button>
+                                                        <Button Style="{StaticResource Button.Icon}"
+                                                                Width="24"
+                                                                Height="24"
+                                                                Margin="2,0,0,0"
+                                                                Command="{Binding ToggleInclusionCommand}"
+                                                                ToolTip="从展示中移除（不会删除原文件）"
+                                                                Visibility="{Binding IsIncluded, Converter={StaticResource BoolToVisibility}}">
+                                                            <TextBlock Text="&#xE711;"
+                                                                       FontFamily="{StaticResource IconFontFamily}"
+                                                                       FontSize="9" />
+                                                        </Button>
+                                                        <Button Style="{StaticResource Button.Icon}"
+                                                                Width="24"
+                                                                Height="24"
+                                                                Margin="2,0,0,0"
+                                                                Command="{Binding ToggleInclusionCommand}"
+                                                                ToolTip="恢复到展示"
+                                                                Visibility="{Binding IsIncluded, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                                            <TextBlock Text="&#xE710;"
+                                                                       FontFamily="{StaticResource IconFontFamily}"
+                                                                       FontSize="10" />
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- 素材说明编辑 -->
+                            <Border Margin="0,4,0,10"
+                                    Padding="14"
+                                    Background="{StaticResource SurfaceSunkenBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Visibility="{Binding IsEditingMedia, Converter={StaticResource BoolToVisibility}}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding EditingMediaTitle}"
+                                               FontSize="12.5"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding EditingMediaFeatureText}"
+                                               Margin="0,4,0,0"
+                                               FontSize="10.5"
+                                               Foreground="{StaticResource TextMutedBrush}" />
+                                    <Border Margin="0,8,0,0"
+                                            Padding="8"
+                                            Background="{StaticResource SurfaceBrush}"
+                                            BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="7">
+                                        <TextBox Style="{StaticResource TextBox.Editor}"
+                                                 Text="{Binding MediaDescriptionDraft, UpdateSourceTrigger=PropertyChanged}"
+                                                 MinHeight="64"
+                                                 MaxHeight="140"
+                                                 FontSize="12" />
+                                    </Border>
+                                    <StackPanel Margin="0,10,0,0"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Right">
+                                        <Button Style="{StaticResource Button.Ghost}"
+                                                Height="28"
+                                                Command="{Binding CancelMediaCommand}"
+                                                Content="取消" />
+                                        <Button Style="{StaticResource Button.Primary}"
+                                                Height="28"
+                                                Padding="12,0"
+                                                Margin="8,0,0,0"
+                                                Command="{Binding SaveMediaDescriptionCommand}"
+                                                Content="保存说明" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Margin="0,2,0,0"
+                                    Padding="10,8"
+                                    Background="{StaticResource SurfaceSunkenBrush}"
+                                    BorderBrush="#5A3035"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Visibility="{Binding Project.HasMediaWarnings, Converter={StaticResource BoolToVisibility}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE946;"
+                                               FontFamily="{StaticResource IconFontFamily}"
+                                               FontSize="10"
+                                               Foreground="{StaticResource DangerBrush}"
+                                               VerticalAlignment="Top" />
+                                    <TextBlock Text="{Binding Project.MediaWarningText}"
+                                               Margin="7,0,0,0"
+                                               MaxWidth="460"
+                                               FontSize="10.5"
+                                               LineHeight="16"
+                                               Foreground="{StaticResource DangerBrush}"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Text="从展示中移除的素材仅影响本软件索引，不会删除 _ProjectPreview 中的原始文件。"
+                                       Margin="0,10,0,0"
+                                       FontSize="10.5"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- 工程信息 -->
+                <Border Grid.Column="2"
+                        Style="{StaticResource Border.SectionCard}"
+                        VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="工程信息" Style="{StaticResource Text.SectionTitle}" />
+                        <Border Height="1"
+                                Margin="0,14,0,0"
+                                Background="{StaticResource DividerBrush}" />
+
+                        <StackPanel Margin="0,14,0,0">
+                            <TextBlock Text="Unity 版本" Style="{StaticResource Text.InfoLabel}" />
+                            <TextBlock Text="{Binding Project.UnityVersion}" Style="{StaticResource Text.InfoValue}" />
+                        </StackPanel>
+
+                        <Border Height="1" Margin="0,14" Background="{StaticResource DividerBrush}" />
+
+                        <StackPanel>
+                            <TextBlock Text="工程路径" Style="{StaticResource Text.InfoLabel}" />
+                            <TextBlock Text="{Binding Project.ProjectPath}"
+                                       FontFamily="{StaticResource MonoFontFamily}"
+                                       FontSize="11.5"
+                                       LineHeight="17"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <Border Height="1" Margin="0,14" Background="{StaticResource DividerBrush}" />
+
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="标签" Style="{StaticResource Text.InfoLabel}" />
+                                <Button Grid.Column="1"
+                                        Style="{StaticResource Button.Ghost}"
+                                        Height="22"
+                                        Padding="6,0"
+                                        Margin="0,-4,0,0"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding EditTagsCommand}"
+                                        Visibility="{Binding IsEditingTags, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                    <TextBlock Text="编辑" FontSize="10" />
+                                </Button>
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding Project.Tags}"
+                                          Visibility="{Binding IsEditingTags, Converter={StaticResource BoolToVisibility}, ConverterParameter=Invert}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Border.TagChip}"
+                                                Margin="0,0,6,6">
+                                            <TextBlock Text="{Binding}"
+                                                       FontSize="10.5"
+                                                       Foreground="{StaticResource TextSecondaryBrush}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <StackPanel Visibility="{Binding IsEditingTags, Converter={StaticResource BoolToVisibility}}">
+                                <Border Padding="8,4"
+                                        Background="{StaticResource SurfaceSunkenBrush}"
+                                        BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="7">
+                                    <TextBox Style="{StaticResource TextBox.Search}"
+                                             Text="{Binding TagsDraft, UpdateSourceTrigger=PropertyChanged}"
+                                             FontSize="11" />
+                                </Border>
+                                <TextBlock Text="使用逗号分隔多个标签"
+                                           Margin="0,4,0,0"
+                                           FontSize="9.5"
+                                           Foreground="{StaticResource TextMutedBrush}" />
+                                <StackPanel Margin="0,6,0,0"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <Button Style="{StaticResource Button.Ghost}"
+                                            Height="24"
+                                            Padding="8,0"
+                                            Command="{Binding CancelTagsCommand}"
+                                            Content="取消" />
+                                    <Button Style="{StaticResource Button.Primary}"
+                                            Height="24"
+                                            Padding="9,0"
+                                            Margin="6,0,0,0"
+                                            Command="{Binding SaveTagsCommand}"
+                                            Content="保存" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Border Height="1" Margin="0,8,0,14" Background="{StaticResource DividerBrush}" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="最近打开" Style="{StaticResource Text.InfoLabel}" />
+                                <TextBlock Text="{Binding Project.LastOpenedTime, Converter={StaticResource RelativeTime}}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="最近修改" Style="{StaticResource Text.InfoLabel}" />
+                                <TextBlock Text="{Binding Project.LastModifiedTime, Converter={StaticResource RelativeTime}}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Margin="0,14" Background="{StaticResource DividerBrush}" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="最后扫描" Style="{StaticResource Text.InfoLabel}" />
+                                <TextBlock Text="{Binding Project.LastScanTime, Converter={StaticResource RelativeTime}}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="功能数量" Style="{StaticResource Text.InfoLabel}" />
+                                <TextBlock Text="{Binding Project.FeatureCount}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Margin="0,14" Background="{StaticResource DividerBrush}" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="依赖包数量" Style="{StaticResource Text.InfoLabel}" />
+                                <TextBlock Text="{Binding Project.PackageSummary}"
+                                           FontSize="11.5"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="素材索引" Style="{StaticResource Text.InfoLabel}" />
+                                <TextBlock Text="{Binding Project.MediaSummary}"
+                                           FontSize="11.5"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource TextSecondaryBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <TextBlock Grid.Row="4"
+                       Text="第六阶段：工程信息、截图与视频索引、标签、功能与素材说明、收藏及最近打开时间保存在本地 SQLite，并同步写入 _ProjectPreview/project-gallery.json；工程目录移动后可在此处重新关联。"
+                       Margin="0,18,0,0"
+                       FontSize="11"
+                       Foreground="{StaticResource TextMutedBrush}" />
+        </Grid>
+    </ScrollViewer>
+</UserControl>
